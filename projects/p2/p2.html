@@ -2,6 +2,8 @@
 <html>
     <head>
                 <title> prachal patel p2 search map </title>
+                
+
         <link
           rel="stylesheet"
           href="https://unpkg.com/material-components-web@latest/dist/material-components-web.min.css">
@@ -16,6 +18,62 @@
         </style>
     </head>
     <body>
+        
+<div class="home">
+            <h1> CPS search engine </h1>
+            <button class="mdc-button" id="start_button">
+              Start
+            </button>
+        </div>
+        
+        <div class="search">
+            <h2> Select school types </h2>
+            <ul class="mdc-list" id="school_list">
+            </ul>
 
+            <div class="selected">
+                
+            </div>
+            <button class="mdc-button" id="search_button">Search</button>
+        </div>
+        
+        <div class="map">    
+        </div>
+        
+        
+    <script
+  src="https://code.jquery.com/jquery-3.3.1.min.js"
+  integrity="sha256-FgpCb/KJQlLNfOu91ta32o/NMZxltwRo8QtmkMRdAu8="
+  crossorigin="anonymous"></script>
+        
+        
+        <script>
+            function pullSchoolTypes() {
+                $.get("https://data.cityofchicago.org/resource/76dk-7ieb.json?$SELECT=school_type&$group=school_type")
+                .done(function(data) {
+                    $.each(data, function(index) {
+                        $("#school_list").append("<li class=\"mdc-list-item\" id=\"li_item\">" + "<input type=\"checkbox\" id=\"box_item_" + index + "\">" + 
+                        "<label for=\"box_item_" + index + "\">" + data[index].school_type + "</label></li>");
+                    });
+                });
+            }
+            $("#search_button").click(function() {
+                var selectedItems = [];
+                $("#school_list input:checked").each(function(i, ob) {
+                    selectedItems.push($("label[for="+$(this).attr("id")+"]").text());
+                }); 
+            });
+            $(document).ready(function() {
+                    $(".home").show();
+                    $(".search").hide();
+                    $(".map").hide();
+            });
+            
+            $("#start_button").click(function() {
+                $(".home").hide();
+                $(".search").show();
+                pullSchoolTypes();
+            });
+        </script>
     </body>
 </html>
