@@ -11,6 +11,7 @@
               href="node_modules/material-components-web/dist/material-components-web.css">
         <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
         <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js"></script>
+   
         <style type="text/css">
             li:hover {
                 background-color:blue;
@@ -37,9 +38,23 @@
             <button class="mdc-button" id="search_button">Search</button>
         </div>
         
-        <div class="map">    
+        <div class="map">
+    <script async defer
+        src="https://maps.googleapis.com/maps/api/js?key=AIzaSyC8XTPhdQREy1z2AniIBd9F7-INizCR5Ag&libraries=visualization&callback=initMap">
+    </script>
+       
         </div>
-        
+            <script> 
+            var map;
+            var markers = [];
+            
+            function initMap() {
+                map = new google.maps.Map(document.getElementById('map'), {
+                    zoom: 10,
+                    center: {lat: 41.8781, lng: -87.7298}
+                });
+            }
+            </script>      
         
     <script
   src="https://code.jquery.com/jquery-3.3.1.min.js"
@@ -48,6 +63,8 @@
         
         
         <script>
+
+            
             function pullSchoolTypes() {
                 $.get("https://data.cityofchicago.org/resource/76dk-7ieb.json?$SELECT=school_type&$group=school_type")
                 .done(function(data) {
@@ -62,6 +79,9 @@
                 $("#school_list input:checked").each(function(i, ob) {
                     selectedItems.push($("label[for="+$(this).attr("id")+"]").text());
                 }); 
+                    $(".search").hide();
+                    $(".map").show();
+                    initMap();
             });
             $(document).ready(function() {
                     $(".home").show();
@@ -75,5 +95,8 @@
                 pullSchoolTypes();
             });
         </script>
+        
+
+        
     </body>
 </html>
