@@ -7,8 +7,8 @@
         <link
           rel="stylesheet"
           href="https://unpkg.com/material-components-web@latest/dist/material-components-web.min.css">
-        <link rel="stylesheet"
-              href="node_modules/material-components-web/dist/material-components-web.css">
+        <!--<link rel="stylesheet"-->
+        <!--      href="node_modules/material-components-web/dist/material-components-web.css">-->
         <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
         <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js"></script>
    
@@ -16,6 +16,10 @@
             li:hover {
                 background-color:blue;
             }
+        .map {
+        height: 400px;
+              }
+            
         </style>
     </head>
     <body>
@@ -28,7 +32,7 @@
         </div>
         
         <div class="search">
-            <h2> Select school types </h2>
+            <h2> Select School Types </h2>
             <ul class="mdc-list" id="school_list">
             </ul>
 
@@ -39,22 +43,14 @@
         </div>
         
         <div class="map">
-    <script async defer
-        src="https://maps.googleapis.com/maps/api/js?key=AIzaSyC8XTPhdQREy1z2AniIBd9F7-INizCR5Ag&libraries=visualization&callback=initMap">
-    </script>
+
        
         </div>
-            <script> 
-            var map;
-            var markers = [];
-            
-            function initMap() {
-                map = new google.maps.Map(document.getElementById('map'), {
-                    zoom: 10,
-                    center: {lat: 41.8781, lng: -87.7298}
-                });
-            }
-            </script>      
+        
+        <script
+        src="https://maps.googleapis.com/maps/api/js?key=AIzaSyC8XTPhdQREy1z2AniIBd9F7-INizCR5Ag&libraries=visualization">
+        </script>
+    
         
     <script
   src="https://code.jquery.com/jquery-3.3.1.min.js"
@@ -63,7 +59,17 @@
         
         
         <script>
+           
 
+            
+            function initMap() {
+            var map;
+            var markers = [];
+                map = new google.maps.Map(document.getElementsByClassName('map')[0], {
+                    zoom: 10,
+                    center: {lat: 41.8781, lng: -87.7298}
+                });
+            }
             
             function pullSchoolTypes() {
                 $.get("https://data.cityofchicago.org/resource/76dk-7ieb.json?$SELECT=school_type&$group=school_type")
@@ -82,6 +88,16 @@
                     $(".search").hide();
                     $(".map").show();
                     initMap();
+                    
+            //make AJAX call
+            
+            $.get("https://data.cityofchicago.org/resource/76dk-7ieb.json")
+            .done(function(data){
+                console.log(data);
+            });
+            
+            
+                    
             });
             $(document).ready(function() {
                     $(".home").show();

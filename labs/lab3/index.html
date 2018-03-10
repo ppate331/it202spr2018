@@ -1,0 +1,148 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width">
+    <title>repl.it</title>
+   
+  </head>
+  <body>
+    <canvas id="myCanvas" width="400" height="600"></canvas>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+    <script>
+      var c=document.getElementById("myCanvas");
+      var ctx=c.getContext("2d");
+      
+      var game = {lives: 3, score: 0, state:"play"};
+      var player = {x: 75, y:110 , color: "green", radius: 25};     
+      var harm = {x: c.width, y:100 , color: "blue", radius: 25};
+      var benefit={x: 100, y:Math.random()*500 , color: "red", radius: 15};
+      
+      
+      
+      
+      //draw function
+      function draw() {
+        ctx.clearRect(0,0,c.width,c.height); // clears from the x coord and y coord of width and height
+        
+        ctx.font="20px Arial-Black";
+        ctx.fillText("Lives:" +game.lives + " Score:"+ game.score,10,50); // puts the score and the count in top corner
+        //harm done in class
+        harm.x--;
+        
+        if (harm.x <= 0) {
+          harm.x = c.width;
+        }
+        
+        ctx.fillStyle = harm.color;
+        ctx.beginPath();
+        ctx.arc(harm.x,harm.y,harm.radius,0,2*Math.PI);
+        ctx.fill();
+        
+        
+        
+        
+        // collision check, from class
+        
+        var dx = player.x - harm.x;
+        var dy = player.y - harm.y;
+        var distance = Math.sqrt(dx * dx + dy * dy);
+        
+        if (distance < player.radius + harm.radius) {
+            // collision detected!
+            console.log("collision");
+            
+            harm.x = c.width;   // repositions the harm object
+            game.lives--;       // reduces the lives left in the game
+            
+          
+            
+            console.log(game);
+        }
+        
+          ctx.fillStyle=benefit.color;
+          ctx.beginPath();
+          ctx.arc(benefit.x,benefit.y,benefit.radius,0,2*Math.PI);
+          ctx.fill();
+          benefit.x--;
+        
+        drawBenefit();
+        ctx.fillStyle = player.color;
+        ctx.beginPath();
+        ctx.arc(player.x,player.y,player.radius,0,2*Math.PI);
+        ctx.fill();
+        
+        
+        
+      
+      
+        // scores and lives code
+            if(game.lives==0){ //checks if gamelives is at 0 if it is will print red screen with big game over letters
+              game.state="over";
+              ctx.clearRect(0,0,c.width,c.height);
+              ctx.fillStyle="red";
+              ctx.fillRect(0,0,c.width,c.height);
+              ctx.font="50px Arial-Black";
+              ctx.fillStyle="white";
+              ctx.fillText("GAME OVER!",50,50);
+              
+            }
+        if(game.state=="play"){
+          requestAnimationFrame(draw);
+        }
+      }
+      
+      // same code used for harm but for benefit
+      function drawBenefit(){
+          if (benefit.x <= 0) {
+            benefit.x = c.width;
+          }
+          var dx = player.x - benefit.x;
+          var dy = player.y - benefit.y;
+          var distance = Math.sqrt(dx * dx + dy * dy);
+          
+          if (distance < player.radius + benefit.radius) {
+              // collision detected for benefit
+              console.log("collision"); // logging of collision for user
+              
+              benefit.x = c.width;   // repositions the benefit
+              game.score+=100;       // increases points scored in game
+            
+              console.log(game);
+          }
+        if(game.state=="play"){
+          requestAnimationFrame(drawBenefit);
+        }
+      }
+      
+      draw();
+      drawBenefit();
+      //keyboard events allowing changes to y and x coordinates coordinate moving the player up down left or right
+            var space = false;
+      $(document).keydown(function(e){
+          switch(e.which){
+                case 37:
+                    player.x-=5;
+                    break
+                case 38:
+                    player.y-=5;
+                    break;
+                case 39:
+                    player.x+=5;
+                    break;
+                case 40:
+                    player.y+=5;
+                    break;
+                case 32:
+                    if(game.state!="play"){
+                      game.state="play";
+                    }
+                default:
+                    return;
+          }
+          e.preventDefault();
+          console.log(e);
+      });
+    </script>
+  </body>
+</html>
