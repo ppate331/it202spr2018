@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title> prachal patel test 2 </title>
+      
+     
+    </head>
+    <body>
+        
+        <script
+      src="https://code.jquery.com/jquery-3.3.1.min.js"
+      integrity="sha256-FgpCb/KJQlLNfOu91ta32o/NMZxltwRo8QtmkMRdAu8="
+      crossorigin="anonymous"></script> 
+         <script >
+    $(document).ready(function() {
+      SearchPage();
+    });
+    
+    function SearchPage() {
+      var url = "https://data.cityofchicago.org/resource/tt4n-kn4t.json";
+      $.ajax({
+        url: url,
+        method: 'GET',
+      }).
+      done(function(result) {
+        showInformation(result);
+      }).
+      fail(function(err) {
+        throw err;
+      });
+    }
+    // reference code for movies list
+    function showInformation(response) {
+        
+      $.each(response, function(i, employee) { 
+          
+        if(employee.full_or_part_time == "P"){ // method to use if statement searched online
+            
+                  console.log(employee); // console.log of employee
+                  var nameAndJob = "<p>Name : " + employee.name + " Job Title: " + employee.job_titles + " Full time or Part time: " + employee.full_or_part_time + "</p> <br>";;
+                $(nameAndJob).appendTo("body");
+        }
+      });
+    
+    }
+    </script>
+      
+
+    </body>
+</html>
