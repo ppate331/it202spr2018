@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html>
+ <head>
+    <style>
+       #map {
+        height: 400px;
+        width: 100%;
+       }
+    </style>
+  </head>
+  <body>
+    <h3>My Google Maps Demo</h3>
+    <div id="map"></div>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+      <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js"></script>
+    <script>
+      function initMap() {
+        var chicago = {lat: 41.8781, lng: -87.6298};
+        var map = new google.maps.Map(document.getElementById('map'), {
+          zoom: 12,
+          center: chicago
+        });
+        
+        var url ="https://data.cityofchicago.org/resource/787j-mys9.json?$where=within_circle(location,41.8781,-87.6298,500)";
+        $.get(url)
+        .done(function(response){
+          console.log(response);
+           $.each(response, function(i,v){
+             var marker = new google.maps.marker({
+               position: {lat:parseFloat(v.latitude), lng:parseFloat(v.longitude)},
+              map: map
+              });
+           });
+      });
+      }
+      
+    </script>
+    <script async defer
+    src="https://maps.googleapis.com/maps/api/js?key=AIzaSyC8XTPhdQREy1z2AniIBd9F7-INizCR5Ag&callback=initMap">
+    </script>
+   
+  </body>
+</html>
