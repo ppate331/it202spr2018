@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title> </title>
+    </head>
+    <body>
+        
+        
+    <div class="container" id="search">
+        <form>
+          <input type="text" id="query"><br>
+          <input type="submit" id="btnSearch" value="Search">
+        </form>
+    </div>
+        
+        
+        <script>
+ return $.ajax({
+    url: url,
+    type: type || "GET",
+    data: data ? JSON.stringify(data) : "",
+    dataType: "json",
+    headers: {
+      "Content-Type": "application/json",
+      Accept: "application/json"
+    }
+  });
+
+</script>
+    </body>
+</html>
