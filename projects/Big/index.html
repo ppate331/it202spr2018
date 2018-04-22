@@ -1,0 +1,339 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>Big Project Prachal Patel</title>
+        <link href="https://unpkg.com/material-components-web@latest/dist/material-components-web.css" rel="stylesheet">
+        
+        <link href="https://fonts.googleapis.com/icon?family=Material+Icons"
+      rel="stylesheet">
+        <style>
+          #map {
+              height: 800px;
+            }
+    </style>
+        <style>
+            .hidden {display:none;}
+            body {margin: 0;}
+            h1 {padding-top:16px;}
+            a.material-icons {text-decoration: none;}
+            .screen {padding-left: 16px;}
+        </style>
+        
+        
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
+    <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js" integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN" crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js" integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q" crossorigin="anonymous"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js" integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl" crossorigin="anonymous"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script> 
+        
+        
+    </head>
+    <body class="mdc-typography">
+        <header class="mdc-toolbar mdc-toolbar--fixed demo-toolbar">
+              <div class="mdc-top-app-bar__row">
+                <section class="mdc-top-app-bar__section mdc-top-app-bar__section--align-start">
+                  <a href="#" class="material-icons mdc-top-app-bar__navigation-icon">menu</a>
+                  <span class="mdc-top-app-bar__title">welcome to my project</span>
+                </section>
+              </div>
+            </header>
+        
+        
+        <main>
+        
+        
+        <div class="mdc-toolbar-fixed-adjust">
+          <div class="">
+            <div class="screen hidden" id="search">
+                <h1>Search</h1>
+                <p>Hello! welcome to the Search Tab, in this tab you can select what type of schools you would like to look at</p>
+                <p>once done, click on the "do search" button and then head to the map tab in the menu bar to look at your searches!</p>
+                         <div id="Search">
+            <h1>Select a School</h1>
+            <select id="schoolType">
+                <option value = "'Career academy'"> Career academy </option>
+                <option value = "'Charter'"> Charter </option>
+                <option value = "'Citywide-Option'"> Citywide-Option </option>
+                <option value = "'Classical'"> Classical </option>
+                <option value = "'Contract'"> Contract </option>
+                <option value = "'Magnet'"> Magnet </option>
+                <option value = "'Military academy'"> Military academy </option>
+                <option value = "'Neighborhood'"> Neighborhood </option>
+                <option value = "'Regional gifted center'"> Regional gifted center </option>
+                <option value = "'Selective enrollment'"> Selective enrollment </option>
+                <option value = "'Small'"> Small </option>
+                <option value = "'Special Education'"> Special Education </option>
+            </select>
+            <br>
+            <br>
+        </div>
+                <button  class="mdc-button" id="doSearch">Do Search</button> 
+                 </div>
+            
+            
+            
+            
+            
+            
+            <div class="screen hidden" id="list">
+                <h1>Results</h1>
+               <h5>new york times movies</h5>
+        <p>Click on the button after typing in what movie you want to search!</p>
+                Search: <input type="text" name="" id="query" />
+        <button id="actuallySearch" onclick="">Submit</button>
+            <div id="results" class="container" style="display: none;">
+    </div>
+    </div>
+    <script>
+        $("#actuallySearch").click(
+            function() {
+                var url = "https://api.nytimes.com/svc/movies/v2/reviews/search.json";
+                url += '?' + $.param({
+                    'api-key': "a1ccfc22e7ed408187859292829d6787",
+                    'query': $("#query").val()
+                });
+                $.ajax({
+                    url: url,
+                    method: 'GET',
+                }).done(function(result) {
+                    $("#results").css("display", "none");
+                    $("#results").css("display", "inline");
+                    var html;
+                    result.results.forEach(function(element){
+                       html += "<br>" + element.display_title + ", publication date: " + element.publication_date + "<br>"; 
+                    });
+                    $("#results").html(html)
+                    console.log(result);                    
+                }).fail(function(err) {
+                    throw err;
+                });
+            }
+        );
+ 
+    </script>
+      </div>
+                
+                
+                
+                
+            <div class="mdc-layout-grid__cell screen hidden" id="map">
+                <h1>Map</h1>
+                </div>
+                
+                
+                
+                
+                
+                
+            <div class="mdc-layout-grid__cell screen hidden" id="about">
+                <h1>About</h1>
+                </div>
+          </div>
+        </div>
+        </main>
+
+        <aside class="mdc-drawer mdc-drawer--temporary mdc-typography" data-mdc-auto-init="MDCTemporaryDrawer">
+          <nav class="mdc-drawer__drawer">
+            <header class="mdc-drawer__header">
+              <div class="mdc-drawer__header-content">
+                Menu Bar 
+              </div>
+            </header>
+            <nav id="icon-with-text-demo" class="mdc-drawer__content mdc-list">
+              
+              <a class="mdc-list-item mdc-list-item--activated" href="#" data-screen="search">
+                <i class="material-icons mdc-list-item__graphic" aria-hidden="true">search</i>Search Schools
+              </a>
+              
+                <a class="mdc-list-item" href="#" data-screen="map">
+                <i class="material-icons mdc-list-item__graphic" aria-hidden="true">map</i>Map for schools
+              </a>
+              
+              <a class="mdc-list-item" href="#" data-screen="list">
+                <i class="material-icons mdc-list-item__graphic" aria-hidden="true">list</i>Movie Releases
+              </a>
+              
+ 
+              
+            </nav>
+          </nav>
+        </aside>
+        
+      
+        
+        <script src="https://unpkg.com/material-components-web@latest/dist/material-components-web.js"></script>
+    
+    
+        <script>
+             window.mdc.autoInit();
+              
+              
+             let drawer = new mdc.drawer.MDCTemporaryDrawer(document.querySelector('.mdc-drawer--temporary'));
+            
+            document.querySelector('.mdc-top-app-bar__navigation-icon').addEventListener('click', () => drawer.open = true);
+            
+            var drawerLinks = document.querySelectorAll('.mdc-list-item');
+            
+             for (var i = 0; i < drawerLinks.length; i++) {
+            
+                 drawerLinks[i].addEventListener('click', (e) => {
+    
+                     var screen;
+                     var attributes = e.target.attributes;
+                     
+                     for (var i = 0; i < attributes.length; i++) {
+                      console.log(attributes[i].name,attributes[i].value);
+                      if (attributes[i].name =="data-screen") {
+                          screen = attributes[i].value;
+                      }
+                      }
+                     drawer.open = false;
+    
+                     showScreen(screen)
+                });
+             }
+            
+            showScreen("search");
+            
+            function showScreen(id) {
+                console.log(id);
+                var screens = document.querySelectorAll(".screen");
+                for (var i = 0; i < screens.length; i++) {
+                    screens[i].classList.add("hidden");
+                }
+                
+                document.querySelector("#" + id).classList.remove("hidden");
+            }
+            
+            
+        </script>
+    
+
+
+    
+    
+    
+    <script
+      src="https://code.jquery.com/jquery-3.3.1.min.js"
+      integrity="sha256-FgpCb/KJQlLNfOu91ta32o/NMZxltwRo8QtmkMRdAu8="
+      crossorigin="anonymous"></script>
+
+
+
+ <script>
+ 
+ 
+     $("#doSearch").on("click", getLocation);
+    var x = document.getElementById("post");
+    var latx;
+    var longx;
+    function getLocation(){
+        
+        if (navigator.geolocation) {
+            navigator.geolocation.getCurrentPosition(showPosition);
+        } 
+        else { 
+            x.innerHTML = "Geolocation is not supported by this browser.";
+        }
+    }
+    function showPosition(position) {
+        latx=position.coords.latitude;
+        longx=position.coords.longitude;
+        initMap();
+    }
+    
+    
+                var dataList="https://data.cityofchicago.org/resource/76dk-7ieb.json?$where=school_type IN (<schoolType>)"
+            function initMap(){
+                    $.get(
+                        dataList.replace("<schoolType>",$("#schoolType").val())
+                    )
+                    .done(function(response){
+                        console.log(response);
+                        var myCenter={lat:parseFloat(latx),lng:parseFloat(longx)};
+                        var map=new google.maps.Map(document.getElementById('map'),{
+                            zoom:12,
+                            center:myCenter,
+                        });
+                        $.each(response,function(i,v){
+                            var contentString = '<div id = "content" style = "color:Black;">'+
+                                                '<div id = "siteNotice">'+
+                                                '</div>'+
+                                                '<h2 id = "firstHeading" class = "firstHeading">' + v.long_name + '</h2>' +
+                                                '<h3 id = " secondHeading" class = "secondHeading">' + v.short_name + '</h3>' +
+                                                '<div id="bodyContent">' +
+                                                '<br>' + v.address + ", " + v.city + ", " + v.location_state + " " + v.location_zip + '<br>' +
+                                                '<br>' + "Phone: " + v.phone + '<br>'
+                                                '</div>';
+                                                '</div>';
+                            var infoWindow=new google.maps.InfoWindow({
+                                content: contentString
+                            });
+                            var mark="Markers/";
+                            switch(v.school_type){
+                                case "Career academy":
+                                  mark += "blackicon.PNG"
+                                  break;
+                                case "Charter":
+                                  mark += "blueicon.PNG"
+                                  break;
+                                case "Citywide-Option":
+                                  mark += "darkgray.PNG"
+                                  break;
+                                case "Classical":
+                                  mark += "darkpurp.PNG"
+                                  break;
+                                 case "Contract":
+                                  mark += "greenicon.PNG"
+                                  break;
+                                case "Magnet":
+                                  mark += "lightorange.PNG"
+                                  break;
+                                case "Military academy":
+                                  mark += "orangeicon.PNG"
+                                  break;
+                                case "Neighborhood":
+                                  mark += "purpleicon.PNG"
+                                  break;
+                                case "Regional gifted center":
+                                  mark += "redicon.PNG"
+                                  break;
+                                case "Selective enrollment":
+                                  mark += "silvericon.PNG"
+                                  break;
+                                case "Small":
+                                  mark += "yellowicon.PNG"
+                                  break;
+                                case "Special Education":
+                                  mark += "darkblue.PNG"
+                                  break;
+                           }
+                           var markers= new google.maps.Marker({
+                               position:{lat:parseFloat(response[i].school_latitude),lng: parseFloat(response[i].school_longitude)},
+                               map: map,
+                               icon:mark
+                           });
+                            markers.addListener('click',function(){
+                                infoWindow.open(map,markers);
+                            });
+                        });
+                        
+                    });
+            }
+        
+        </script>
+            
+    <script
+        src="https://code.jquery.com/jquery-3.3.1.min.js"
+        integrity="sha256-FgpCb/KJQlLNfOu91ta32o/NMZxltwRo8QtmkMRdAu8="
+        crossorigin="anonymous">
+    </script>
+    <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyC8XTPhdQREy1z2AniIBd9F7-INizCR5Ag&callback=initMap"
+    async defer></script>
+    
+  
+    
+    </script>
+  </body>
+</html>

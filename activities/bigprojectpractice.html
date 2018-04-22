@@ -1,0 +1,340 @@
+<!DOCTYPE html>
+
+<html>
+<html>
+<head>
+    <title>Project 2</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+  <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+  
+   <script
+  src="https://code.jquery.com/jquery-3.3.1.min.js"
+  integrity="sha256-FgpCb/KJQlLNfOu91ta32o/NMZxltwRo8QtmkMRdAu8="
+  crossorigin="anonymous"></script>
+  
+  <style>
+       #map {
+        height: 400px;
+        width: 100%;
+       }
+       
+        .container {
+    display: none;
+  }
+    </style>
+    
+</head>
+    <body>
+        
+        <template id="card">
+            <div class="col-sm-3">
+              <div class="card" >
+                <h4 class="card-title">Card title</h4>
+                <h6 class="card-subtitle mb-2 text-muted">Card subtitle</h6>
+                <p><b>Summary</b></p>
+                <p class="card-text" id="summary"></p>
+                <p><b>Languages:</b></p>
+                <p class="card-text" id="classroom_languages"></p>
+                <p><b>Phone Number:</b></p>
+                <p class="card-text" id="phone"></p>
+                <p><b>Hours:</b></p>
+                <p class="card-text" id="school_hours"></p>
+                <a href="#" class="card-link">Webpage</a>
+              </div>
+            </div>
+        </template>
+        
+        <template id="accordian">
+            <div class="panel panel-default">
+              <div class="panel-heading">
+                <h4 class="panel-title">
+                  <a data-toggle="collapse" data-parent="#accordion" href="#collapse2" id="title">Collapsible Group 2</a>
+                </h4>
+              </div>
+              <div id="collapse2" class="panel-collapse collapse">
+                  <h3>School Type Description-</h3>
+                <div class="panel-body" id="text">temp</div>
+              </div>
+            </div>
+        </template>
+        
+        <div class="container" id="map">
+                
+            </div>
+        
+        <div class="container" id="home">
+            <h1>Welecome</h1>
+            <p>This is an application to display different schools in chicago by their type</p>
+            <p>On the Next page you will see a listing of all schools by type, along with definitions for what each type is</p>
+            <p>at the top of the page you will see a checklist of school-types, simply select the school types you want to see maped and click "Show selected on Map"</p>
+            <h4>Click start below yo get started!!</h4>
+            <button id="btnStart">Start</button>
+        </div>
+        
+        <div class="container" id="boxes-listing">
+            <h1>School Type Selection</h1>
+            <p>Please select a school type from the options below</p>
+            <form id="checkboxes" class="checkboxes"></form>
+            <button id="btnMap">Show selected on Map</button>
+            
+            <h1>Listing</h1>
+            <p>Below is a listing of all schools by their school type</p>
+            <div  id="listing">
+                
+                
+            <div class="container">
+                <div class="panel-group" id="listing">
+                </div> 
+                </div>
+                
+            </div>
+            </div>
+            
+        <script>
+        
+        var markers = [];
+        var counter = -1;
+        var first = true;
+        
+        var colors = ["http://maps.google.com/mapfiles/ms/micons/yellow.png", 
+        "http://maps.google.com/mapfiles/ms/micons/blue.png",
+        "http://maps.google.com/mapfiles/ms/micons/green.png",
+        "http://maps.google.com/mapfiles/ms/micons/lightblue.png",
+        "http://maps.google.com/mapfiles/ms/micons/orange.png", 
+        "http://maps.google.com/mapfiles/ms/micons/pink.png",
+        "http://maps.google.com/mapfiles/ms/micons/purple.png", 
+        "http://maps.google.com/mapfiles/ms/micons/red.png",
+        "http://maps.google.com/mapfiles/ms/micons/ylw-pushpin.png", 
+        "http://maps.google.com/mapfiles/ms/micons/blue-pushpin.png", 
+        "http://maps.google.com/mapfiles/ms/micons/grn-pushpin.png",
+        "http://maps.google.com/mapfiles/ms/micons/ltblu-pushpin.png" ,
+        "http://maps.google.com/mapfiles/ms/micons/pink-pushpin.png",
+        "http://maps.google.com/mapfiles/ms/micons/purple-pushpin.png",
+        "http://maps.google.com/mapfiles/ms/micons/red-pushpin.png"
+        ];
+        
+        function initMap() {
+             
+             
+    $("#boxes-listing").css("display", "none");
+        for (var i = 0; i < markers.length; i++) {
+          markers[i].setMap(null);
+        }
+        
+        if(first)
+        {
+            first = false;
+            
+        }
+        else{
+            $("#map").css("display", "block");
+        }
+        
+        var Chi = {lat: 41.8704, lng: -87.6675};
+        var map = new google.maps.Map(document.getElementById('map'), {
+          zoom: 10,
+          center: Chi
+        });
+        
+        
+        var SchoolType = document.forms['checkboxes'].elements[ 'School-Type' ];
+        
+        for(var i = 0, len = SchoolType.length; i<len; i++)
+        {
+            counter += 1;
+                var color = colors[counter];
+            if(SchoolType[i].checked )
+            {
+            
+                
+                console.log(SchoolType[i].defaultValue  + " Clicked!")
+                //now we need to find all schools of the selected type
+                var link = "https://data.cityofchicago.org/resource/76dk-7ieb.json?$where=school_type%20IN%20('";
+                 //remember to add ')
+                  $.get(link + SchoolType[i].defaultValue + "')")
+                  .done(function(info) {
+                      
+                      $.each(info, function(x,v)
+                      {
+                          var location = {lat: parseFloat(v.location.coordinates[1]), lng: parseFloat(v.location.coordinates[0])};
+                
+                          var newMarker = new google.maps.Marker({
+                          position: location,
+                          map: map,
+                          icon: new google.maps.MarkerImage(color),
+                          //animation: google.maps.Animation.DROP,
+                          title: v.long_name
+                        });
+                        
+                        markers.push(newMarker);
+                        
+                        
+                         var contentString = '<div id="content">'+
+            '<div id="siteNotice">'+
+            '</div>'+
+            '<h1 id="firstHeading" class="firstHeading">' + v.long_name +'</h1>'+
+            '<div id="bodyContent">'+
+            '<p>Address:  '+ v.location_address +'</p>'+
+            '<p>Type:  '+ v.school_type +'</p>'+
+            '<p>color:  '+ color +'</p>'+
+            '<p>counter:  '+ counter +'</p>'+
+            '</div>'+
+            '</div>';
+        var infowindow = new google.maps.InfoWindow({
+          content: contentString
+        });
+        newMarker.addListener('click', function() {
+          infowindow.open(map, newMarker);
+        });
+        
+                      })
+                  })
+            }
+        }
+        
+        console.log("Map");
+        
+        
+       
+       
+        
+      }
+        
+        
+        //get a list of all the schools
+        $.get("https://data.cityofchicago.org/resource/76dk-7ieb.json?$select=classification_description,school_type&$group=classification_description,school_type")
+        .done(function(responce) {
+            //create clickboxes to select school.
+            var s1 = document.getElementById("checkboxes");
+            
+             $.each(responce, function(i,v)
+              {
+                var checkbox = document.createElement("input");
+                
+                checkbox.type = "checkbox";    // make the element a checkbox
+                checkbox.name = "School-Type";      // give it a name we can check on the server side
+                checkbox.value = v.school_type;         // make its value "pair"
+                checkbox.id = v.school_type;
+                s1.appendChild(checkbox);
+                
+                var label = document.createElement('label')
+                label.htmlFor = v.school_type;
+                label.appendChild(document.createTextNode(v.school_type));
+                
+                s1.appendChild(label);
+                s1.appendChild(document.createElement("br"));
+                
+                //create dropdown menu for listing
+                var t = document.querySelector('#accordian');
+                 var element = t.content.querySelector("#title");
+                 element.textContent = v.school_type;
+                 var element = t.content.querySelector("a");
+                 var string = (v.school_type).replace(/ /g, '') + "acc";
+                 $(element).attr('href', ("#" + string));
+                 var element = t.content.querySelector(".panel-collapse");
+                 var string2 = (v.school_type).replace(/ /g, '') + "acc";
+                 $(element).attr('id', string2);
+                 var element = t.content.querySelector(".panel-body");
+                 var string3 = (v.school_type).replace(/ /g, '') + "text";
+                 $(element).attr('id', string3);
+                 
+                 
+                 var element = t.content.querySelector(".panel-body");
+                 element.textContent = v.classification_description;
+                 
+                 
+                 var listing = document.querySelector("#listing");
+                 var clone = document.importNode(t.content, true);
+                 listing.appendChild(clone);//now we need to set the cards with the accordian menu
+                 var link = "https://data.cityofchicago.org/resource/76dk-7ieb.json?$where=school_type%20IN%20('";
+                 //remember to add ')
+                  $.get(link + v.school_type + "')")
+                  .done(function(info) {
+                      console.log(info)
+                      $.each(info, function(j,w)
+                      {
+                          var card = document.querySelector('#card');
+                          var element = card.content.querySelector(".card-title");
+                          element.textContent = w.long_name;
+                          var element = card.content.querySelector(".card-subtitle");
+                          element.textContent = w.location_address;
+                          var element = card.content.querySelector("#summary");
+                          element.textContent = w.summary;
+                          var element = card.content.querySelector("#classroom_languages");
+                          element.textContent = w.classroom_languages;
+                          var element = card.content.querySelector("#phone");
+                          element.textContent = w.phone;
+                          var element = card.content.querySelector("#school_hours");
+                          element.textContent = w.school_hours;
+                          var element = card.content.querySelector("a");
+                         $(element).attr('href', w.website);
+                          
+                          
+                          //add card to dropdown
+                          var loc = document.querySelector("#" + string3);
+                         var clone = document.importNode(card.content, true);
+                         loc.appendChild(clone);
+                          
+                      })
+                  })
+                  
+              })
+                 
+                 
+                
+                
+                  
+                console.log(responce);
+                
+            }).fail(function(err) {
+                throw err;
+                
+            });
+            
+            
+            // $.get("https://data.cityofchicago.org/resource/76dk-7ieb.json")
+            // .done(function(result) {
+            //     console.log(result);
+                
+            // }).fail(function(err) {
+            //     throw err;
+                
+            // });
+            
+            
+            //accordian Menu info
+            var acc = document.getElementsByClassName("accordion");
+            var i;
+            
+            for (i = 0; i < acc.length; i++) {
+                acc[i].addEventListener("click", function() {
+                    this.classList.toggle("active");
+                    var panel = this.nextElementSibling;
+                    if (panel.style.display === "block") {
+                        panel.style.display = "none";
+                    } else {
+                        panel.style.display = "block";
+                    }
+                });
+            }
+$("#btnMap").on("click", initMap);
+ $( document ).ready(function() {
+        console.log( "document loaded" );
+        $("#home").css("display", "block");
+    });
+    
+    $("#home").on("click", hidestuff);
+function hidestuff(){
+  
+   $("#home").css("display", "none");
+    $("#boxes-listing").css("display", "block");
+}
+        </script>
+        <script async defer
+    src="https://maps.googleapis.com/maps/api/js?key=AIzaSyC8XTPhdQREy1z2AniIBd9F7-INizCR5Ag&callback=initMap">
+    </script>
+        
+    </body>
+</html>

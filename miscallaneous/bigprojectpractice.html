@@ -1,0 +1,151 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css">
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+        <title>prachal patel</title>
+    </head>
+    <style>
+          #map {
+              height: 800px;
+            }
+    </style>
+    <body>
+        <div id="Instructions">
+            <h1>Getting Started</h1>
+            <div id="list">
+                <ul>
+                    <li>select a housing type you would like to search for</li>
+                    <li>next click the housing type you want to search for and select go!</li>
+                </ul>
+            </div>
+            <button id="start" class="btn btn-primary" >Let's Begin!</button>
+        </div>
+        <div id="Search">
+            <h1>Select a housing type for affordable renting</h1>
+            <select id="propertyType">
+                <option value = "'ARO'"> ARO </option>
+                <option value = "'Multifamily'"> Multifamily </option>
+                <option value = "'People with Disabilities'"> People with Disabilities </option>
+                <option value = "'Senior'"> Senior </option>
+                <option value = "'Supportive/HIV/AIDS'"> Supportive/HIV/AIDS </option>
+                <option value = "'Supportive Housing'"> Supportive Housing </option>
+                <option value = "'Supportive/Veterans'"> Supportive/Veterans </option>
+                <option value = "'Senior HUD 202'"> Senior HUD 202 </option>
+ 
+            </select>
+            <br>
+            <br>
+            <button id="propertySearch" class="btn btn-primary">Go!</button>
+        </div>
+    
+        <div id="Locations">
+            <h1>Here are the desired locations of the schools searched for...</h1>
+            <button id="newSearch" class="btn btn-primary">New Search</button>
+            <div id="map"></div>
+        </div>
+         <script src="https://code.jquery.com/jquery-3.3.1.min.js" integrity="sha256-FgpCb/KJQlLNfOu91ta32o/NMZxltwRo8QtmkMRdAu8="crossorigin="anonymous"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/tether/1.4.0/js/tether.min.js" integrity="sha384-DztdAPBWPRXSA/3eYEEUWrWCy7G5KFbe8fFjk5JAIxUYHKkDx6Qin1DkWx51bBrb" crossorigin="anonymous"></script>
+        <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-alpha.6/js/bootstrap.min.js" integrity="sha384-vBWWzlZJ8ea9aCX4pEW3rVHjgjt7zpkNpZk+02D9phzyeVkE+jo0ieGizqPLForn" crossorigin="anonymous"></script>
+       
+        <script>
+            $(document).ready(function(){
+                $("#Instructions").show();
+                $("#Search").hide();
+                $("#Locations").hide();
+            });
+            
+            $("#start").on("click",function(){
+                $("#Instructions").hide();
+                $("#Search").show();
+                $("#Locations").hide();
+            });
+            $("#newSearch").on("click",function(){
+                $("#Instructions").hide();
+                $("#Search").show();
+                $("#Locations").hide();
+            });
+            //https://data.cityofchicago.org/resource/uahe-iimk.json
+            //"https://data.cityofchicago.org/resource/uahe-iimk.json?$where=property_type IN (<propertyType>)"
+            var dataList="https://data.cityofchicago.org/resource/uahe-iimk.json?$where=property_type IN (<propertyType>)";
+            function initMap(){
+                $("#propertySearch").on("click",function(){
+                    $("#Instructions").hide();
+                    $("#Search").hide();
+                    $("#Locations").show();
+                    $.get(
+                        dataList.replace("<propertyType>",$("#propertyType").val())
+                    )
+                    .done(function(response){
+                        console.log(response);
+                        var myCenter={lat:41.878,lng:-87.6298};
+                        var map=new google.maps.Map(document.getElementById('map'),{
+                            zoom:12,
+                            center:myCenter, 
+                        });
+                        $.each(response,function(i,v){
+                            var contentString = '<div id = "content" style = "color:Black;">'+
+                                                '<div id = "siteNotice">'+
+                                                '</div>'+
+                                                '<h2 id = "firstHeading" class = "firstHeading">' + v.community_area + '</h2>' +
+                                                '<h3 id = " secondHeading" class = "secondHeading">' + v.property_name + '</h3>' +
+                                                '<div id="bodyContent">' +
+                                                '<br>' + v.address + ", " + v.zip_code + ", " + v.phone_number + " " + v.management_company + '<br>' +
+                                                '<br>' + "Property type " + v.property_type + '<br>';
+                                                '</div>';
+                                                '</div>';
+                            var infoWindow=new google.maps.InfoWindow({
+                                content: contentString
+                            });
+                            var mark="Markers/";
+                            switch(v.property_type){
+                                case "ARO":
+                                  mark += "blackicon.PNG";
+                                  break;
+                                case "Multifamily":
+                                  mark += "blueicon.PNG";
+                                  break;
+                                case "People with Disabilities":
+                                  mark += "darkgray.PNG";
+                                  break;
+                                case "Senior":
+                                  mark += "darkpurp.PNG";
+                                  break;
+                                 case "Supportive/HIV/AIDS":
+                                  mark += "greenicon.PNG";
+                                  break;
+                                case "Supportive Housing":
+                                  mark += "lightorange.PNG";
+                                  break;
+                                case "Supportive/Veterans":
+                                  mark += "orangeicon.PNG";
+                                  break;
+                                case "Senior HUD 202":
+                                  mark += "purpleicon.PNG";
+                                  break;
+                           }
+                           var markers= new google.maps.Marker({
+                               position:{lat:parseFloat(response[i].latitude),lng: parseFloat(response[i].longitude)},
+                               map: map,
+                               icon:mark
+                           });
+                            markers.addListener('click',function(){
+                                infoWindow.open(map,markers);
+                            });
+                        });
+                        
+                    });
+                });
+            }
+        
+        </script>
+            
+    <script
+        src="https://code.jquery.com/jquery-3.3.1.min.js"
+        integrity="sha256-FgpCb/KJQlLNfOu91ta32o/NMZxltwRo8QtmkMRdAu8="
+        crossorigin="anonymous">
+    </script>
+    <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyC8XTPhdQREy1z2AniIBd9F7-INizCR5Ag&callback=initMap"
+    async defer></script>
+    </body>
+</html>
