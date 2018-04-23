@@ -20,7 +20,7 @@
             .screen {padding-left: 16px;}
         </style>
         
-        
+        <link rel="manifest" href="/manifest.json">
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
     <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js" integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN" crossorigin="anonymous"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js" integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q" crossorigin="anonymous"></script>
@@ -85,6 +85,64 @@
             <div id="results" class="container" style="display: none;">
     </div>
     </div>
+    
+<script>
+        if('serviceWorker' in navigator){
+      navigator.serviceWorker.register('./service-worker.js')
+      .then(function(reg){
+        console.log("registered sw");
+      }).catch(function(err){
+        console.log(err);
+      });
+    }
+    
+</script>
+    
+ 
+        <script>         
+          // This works on all devices/browsers, and uses IndexedDBShim as a final fallback 
+          var indexedDB = window.indexedDB || window.mozIndexedDB || window.webkitIndexedDB || window.msIndexedDB || window.shimIndexedDB;
+          
+          // Open (or create) the database
+          var open = indexedDB.open("MyDatabase", 1);
+          
+          open.onupgradeneeded = function() {
+              var db = open.result;
+              var store = db.createObjectStore("MyObjectStore", {keyPath: "id"});
+              var index = store.createIndex("MySettings", ["setting.value"]);
+          };
+          
+          open.onsuccess = function() {
+              // Start a new transaction
+              db = open.result;
+              var tx = db.transaction("MyObjectStore", "readwrite");
+              var store = tx.objectStore("MyObjectStore");
+              var index = store.index("MySettings");
+          
+             
+              store.put({id: 1234, setting: {value: "on"}});
+              store.put({id: 2222, setting: {value: "on",}});
+              
+              
+              var getsetting1 = store.get(1);
+              var getsetting2 = store.get(2);
+              
+              // Close the db when the transaction is done
+              tx.oncomplete = function() {
+                  db.close();
+              };
+          };
+        </script>
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
     <script>
         $("#actuallySearch").click(
             function() {
