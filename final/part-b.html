@@ -37,7 +37,7 @@
     var url="https://data.cityofchicago.org/resource/t57k-za2y.json?clinic_type=<clinicType>"
     function initMap(){
         $("#clinicSearch").on("click",function(){
-            $.get(url.replace("<clinicType>",$("#typeClinic").val())
+            $.get(url.replace("<clinicType>",$("#type").val())
             )
             .done(function(response){
                 console.log(response)
@@ -54,7 +54,7 @@
                     var OpenHours=v.hours_of_operation;                    
                     var PhoneNumber=v.phone_1;
                     var Location=v.city+", "+v.state+" "+v.zip;                    
-                    var typeClinic=v.clinic_type;
+                    var type=v.clinic_type;
                     var ul="list-group";
                     var li="list-group-item";
                     var card="<ul class="+ul+">"+
